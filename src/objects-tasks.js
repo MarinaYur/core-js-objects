@@ -239,7 +239,14 @@ function fromJSON(proto, json) {
  *    ]
  */
 function sortCitiesArray(arr) {
-  throw new Error('Not implemented');
+  const sortedArray = arr;
+  return sortedArray.sort((obj1, obj2) => {
+    const sortedByCountries = obj1.country > obj2.country ? 1 : -1;
+    if (obj1.country === obj2.country) {
+      return obj1.city > obj2.city ? 1 : -1;
+    }
+    return sortedByCountries;
+  });
 }
 
 /**
@@ -272,8 +279,24 @@ function sortCitiesArray(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const arr = array;
+  const multimapArr = [];
+  const setOfKeySelectors = new Set(arr.map(keySelector));
+  Array.from(setOfKeySelectors).map((value, index) => {
+    multimapArr.push([value]);
+    const valueSelectorArray = [];
+    arr.forEach((item) => {
+      if (keySelector(item) === value) {
+        valueSelectorArray.push(valueSelector(item));
+        if (!multimapArr[index].includes(valueSelectorArray)) {
+          multimapArr[index].push(valueSelectorArray);
+        }
+      }
+    });
+    return multimapArr;
+  });
+  return multimapArr;
 }
 
 /**
